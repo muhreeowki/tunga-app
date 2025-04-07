@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - TUNGA</title>
+    <title>Menu - Tunga Restaurant</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -13,23 +13,42 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">TUNGA</a>
+            <a class="navbar-brand" href="index.html">Tunga Restaurant</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="reservation.html">Table Reservation</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="delivery.html">Home Delivery</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link active" href="menu.html">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reservation.html">Reservation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="delivery.html">Delivery</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="cart.html">
+                            <i class="fas fa-shopping-cart"></i> Cart
+                        </a>
+                    </li>
+                    <li class="nav-item" id="loginNavItem">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                    <li class="nav-item" id="registerNavItem">
+                        <a class="nav-link" href="register.html">Register</a>
+                    </li>
+                    <li class="nav-item" id="profileNavItem" style="display: none;">
+                        <a class="nav-link" href="profile.html">Profile</a>
+                    </li>
+                    <li class="nav-item" id="logoutNavItem" style="display: none;">
+                        <a class="nav-link" href="#" id="logoutLink">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -37,127 +56,55 @@
     </nav>
 
     <!-- Menu Section -->
-    <div class="container my-5">
-        <h1 class="text-center mb-5">Our Menu</h1>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Our Menu</h1>
         
-        <!-- Appetizers -->
-        <div class="menu-category mb-5">
-            <h2 class="text-center mb-4">Appetizers</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Vegetable Spring Rolls</h5>
-                            <p class="card-text">Crispy spring rolls filled with fresh vegetables</p>
-                            <p class="text-muted">Serves 2 | $8.99</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Chicken Wings</h5>
-                            <p class="card-text">Spicy buffalo wings with blue cheese dip</p>
-                            <p class="text-muted">Serves 2 | $10.99</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Category Tabs -->
+        <ul class="nav nav-tabs mb-4" id="categoryTabs" role="tablist">
+            <!-- Tabs will be dynamically populated -->
+        </ul>
 
-        <!-- Main Courses -->
-        <div class="menu-category mb-5">
-            <h2 class="text-center mb-4">Main Courses</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Vegetable Pasta</h5>
-                            <p class="card-text">Fresh vegetables with pasta in white sauce</p>
-                            <p class="text-muted">Serves 2 | $12.99</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Grilled Chicken</h5>
-                            <p class="card-text">Marinated chicken with herbs and vegetables</p>
-                            <p class="text-muted">Serves 2 | $15.99</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Desserts -->
-        <div class="menu-category mb-5">
-            <h2 class="text-center mb-4">Desserts</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Chocolate Lava Cake</h5>
-                            <p class="card-text">Warm chocolate cake with vanilla ice cream</p>
-                            <p class="text-muted">Serves 1 | $7.99</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Tiramisu</h5>
-                            <p class="card-text">Classic Italian dessert with coffee and mascarpone</p>
-                            <p class="text-muted">Serves 1 | $8.99</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Beverages -->
-        <div class="menu-category mb-5">
-            <h2 class="text-center mb-4">Beverages</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Fresh Lemonade</h5>
-                            <p class="card-text">Homemade lemonade with mint</p>
-                            <p class="text-muted">$3.99</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Iced Tea</h5>
-                            <p class="card-text">Freshly brewed iced tea with lemon</p>
-                            <p class="text-muted">$3.99</p>
-                        </div>
-                    </div>
+        <!-- Tab Content -->
+        <div class="tab-content" id="categoryTabsContent">
+            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                <div class="row" id="menuItems">
+                    <!-- Menu items will be dynamically populated -->
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
+    <footer class="bg-dark text-white mt-5 py-4">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <h5>TUNGA</h5>
-                    <p>Fine Dining & Home Delivery</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p>Contact: +1 234 567 890</p>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
                     <p>Email: info@tunga.com</p>
+                    <p>Phone: +1 234 567 890</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Opening Hours</h5>
+                    <p>Monday - Friday: 11:00 - 22:00</p>
+                    <p>Saturday - Sunday: 10:00 - 23:00</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/menu.js"></script>
 </body>
 </html> 
