@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const reservationForm = document.getElementById('reservationForm');
     const dateInput = document.getElementById('date');
     const timeInput = document.getElementById('time');
+    const submitButton = document.getElementById('submitReservation');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
 
     // Set minimum date (today) and maximum date (1 month from today)
     const today = new Date();
@@ -30,33 +33,44 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle form submission
-    reservationForm.addEventListener('submit', function(e) {
+    reservationForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+        
+        // Show loading state
+        submitButton.disabled = true;
+        loadingSpinner.style.display = 'inline-block';
+        errorMessage.style.display = 'none';
 
-        // Generate a random token number
-        const tokenNumber = 'TUNGA-' + Math.floor(100000 + Math.random() * 900000);
+        try {
+            // Create reservation object
+            const reservation = {
+                restaurant: document.getElementById('restaurant').value,
+                date: dateInput.value,
+                time: timeInput.value,
+                guests: document.getElementById('guests').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                specialRequests: document.getElementById('specialRequests').value
+            };
 
-        // Create reservation object
-        const reservation = {
-            restaurant: document.getElementById('restaurant').value,
-            date: dateInput.value,
-            time: timeInput.value,
-            guests: document.getElementById('guests').value,
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            specialRequests: document.getElementById('specialRequests').value,
-            token: tokenNumber
-        };
-
-        // Here you would typically send this data to your backend API
-        console.log('Reservation submitted:', reservation);
-
-        // Show success message with token number
-        alert(`Reservation successful! Your token number is: ${tokenNumber}`);
-
-        // Reset form
-        reservationForm.reset();
+            // Make API call
+            const response = await makeApiCall(API_CONFIG.ENDPOINTS.RESERVATIONS, 'POST', reservation);
+            
+            // Show success message with token number
+            alert(`Reservation successful! Your token number is: ${response.token}`);
+            
+            // Reset form
+            reservationForm.reset();
+        } catch (error) {
+            console.error('Reservation failed:', error);
+            errorMessage.textContent = 'Failed to make reservation. Please try again.';
+            errorMessage.style.display = 'block';
+        } finally {
+            // Hide loading state
+            submitButton.disabled = false;
+            loadingSpinner.style.display = 'none';
+        }
     });
 });
 

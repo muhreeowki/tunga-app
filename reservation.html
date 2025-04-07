@@ -37,14 +37,15 @@
     </nav>
 
     <!-- Reservation Form -->
-    <div class="container my-5">
+    <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Table Reservation</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Make a Reservation</h3>
                     </div>
                     <div class="card-body">
+                        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
                         <form id="reservationForm">
                             <div class="mb-3">
                                 <label for="restaurant" class="form-label">Select Restaurant</label>
@@ -93,7 +94,12 @@
                                 <label for="specialRequests" class="form-label">Special Requests</label>
                                 <textarea class="form-control" id="specialRequests" rows="3"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Book Table</button>
+                            <div class="text-center mt-4">
+                                <button type="submit" id="submitReservation" class="btn btn-primary">
+                                    <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                    Submit Reservation
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

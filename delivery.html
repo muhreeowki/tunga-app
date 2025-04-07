@@ -37,79 +37,22 @@
     </nav>
 
     <!-- Delivery Form -->
-    <div class="container my-5">
-        <div class="row">
-            <!-- Menu Selection -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card shadow mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Menu Selection</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Place a Delivery Order</h3>
                     </div>
                     <div class="card-body">
-                        <ul class="nav nav-tabs mb-3" id="menuTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="veg-tab" data-bs-toggle="tab" data-bs-target="#veg" type="button">Vegetarian</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="nonveg-tab" data-bs-toggle="tab" data-bs-target="#nonveg" type="button">Non-Vegetarian</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="menuTabsContent">
-                            <div class="tab-pane fade show active" id="veg" role="tabpanel">
-                                <div class="menu-items">
-                                    <!-- Sample Vegetarian Items -->
-                                    <div class="menu-item mb-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h5>Vegetable Pasta</h5>
-                                                <p class="mb-0">Serves 2 | Fresh vegetables with pasta in white sauce</p>
-                                            </div>
-                                            <div class="text-end">
-                                                <p class="mb-0">$12.99</p>
-                                                <button class="btn btn-sm btn-primary add-to-cart" data-item="Vegetable Pasta" data-price="12.99">Add to Cart</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Add more vegetarian items here -->
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="nonveg" role="tabpanel">
-                                <div class="menu-items">
-                                    <!-- Sample Non-Vegetarian Items -->
-                                    <div class="menu-item mb-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h5>Grilled Chicken</h5>
-                                                <p class="mb-0">Serves 2 | Marinated chicken with herbs</p>
-                                            </div>
-                                            <div class="text-end">
-                                                <p class="mb-0">$15.99</p>
-                                                <button class="btn btn-sm btn-primary add-to-cart" data-item="Grilled Chicken" data-price="15.99">Add to Cart</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Add more non-vegetarian items here -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Order Summary and Delivery Details -->
-            <div class="col-md-4">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Order Summary</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="cart-items" class="mb-3">
-                            <!-- Cart items will be added here dynamically -->
-                        </div>
-                        <div class="mb-3">
-                            <h5>Total: $<span id="total-amount">0.00</span></h5>
-                        </div>
+                        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
                         <form id="deliveryForm">
+                            <div class="mb-4">
+                                <h4>Menu Items</h4>
+                                <div id="menuItems" class="menu-items">
+                                    <!-- Menu items will be loaded dynamically -->
+                                </div>
+                            </div>
                             <div class="mb-3">
                                 <label for="deliveryName" class="form-label">Full Name</label>
                                 <input type="text" class="form-control" id="deliveryName" required>
@@ -126,7 +69,12 @@
                                 <label for="deliveryEmail" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="deliveryEmail" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Place Order</button>
+                            <div class="text-center mt-4">
+                                <button type="submit" id="submitDelivery" class="btn btn-primary">
+                                    <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                    Place Order
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

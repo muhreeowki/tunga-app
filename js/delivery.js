@@ -1,92 +1,78 @@
 document.addEventListener('DOMContentLoaded', function() {
     const deliveryForm = document.getElementById('deliveryForm');
-    const cartItems = document.getElementById('cart-items');
-    const totalAmount = document.getElementById('total-amount');
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-    
-    let cart = [];
-    let total = 0;
+    const submitButton = document.getElementById('submitDelivery');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const menuItems = document.getElementById('menuItems');
 
-    // Add to cart functionality
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const item = this.dataset.item;
-            const price = parseFloat(this.dataset.price);
-            
-            // Add item to cart
-            cart.push({ item, price });
-            total += price;
-            
-            // Update cart display
-            updateCart();
-        });
-    });
+    // Fetch menu items on page load
+    async function fetchMenuItems() {
+        try {
+            const items = await makeApiCall(API_CONFIG.ENDPOINTS.MENU);
+            displayMenuItems(items);
+        } catch (error) {
+            console.error('Failed to fetch menu items:', error);
+            errorMessage.textContent = 'Failed to load menu items. Please try again.';
+            errorMessage.style.display = 'block';
+        }
+    }
 
-    // Update cart display
-    function updateCart() {
-        cartItems.innerHTML = '';
-        cart.forEach((item, index) => {
-            const cartItem = document.createElement('div');
-            cartItem.className = 'd-flex justify-content-between align-items-center mb-2';
-            cartItem.innerHTML = `
-                <span>${item.item}</span>
-                <div>
-                    <span class="me-2">$${item.price.toFixed(2)}</span>
-                    <button class="btn btn-sm btn-danger remove-item" data-index="${index}">×</button>
-                </div>
+    function displayMenuItems(items) {
+        menuItems.innerHTML = '';
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'menu-item';
+            div.innerHTML = `
+                <input type="checkbox" id="item-${item.id}" value="${item.id}">
+                <label for="item-${item.id}">${item.name} - $${item.price}</label>
             `;
-            cartItems.appendChild(cartItem);
-        });
-
-        // Update total
-        totalAmount.textContent = total.toFixed(2);
-
-        // Add event listeners to remove buttons
-        document.querySelectorAll('.remove-item').forEach(button => {
-            button.addEventListener('click', function() {
-                const index = parseInt(this.dataset.index);
-                total -= cart[index].price;
-                cart.splice(index, 1);
-                updateCart();
-            });
+            menuItems.appendChild(div);
         });
     }
 
     // Handle form submission
-    deliveryForm.addEventListener('submit', function(e) {
+    deliveryForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+        
+        // Show loading state
+        submitButton.disabled = true;
+        loadingSpinner.style.display = 'inline-block';
+        errorMessage.style.display = 'none';
 
-        if (cart.length === 0) {
-            alert('Please add items to your cart before placing an order.');
-            return;
+        try {
+            // Get selected items
+            const selectedItems = Array.from(document.querySelectorAll('#menuItems input:checked'))
+                .map(checkbox => checkbox.value);
+
+            // Create delivery object
+            const delivery = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                items: selectedItems,
+                specialInstructions: document.getElementById('specialInstructions').value
+            };
+
+            // Make API call
+            const response = await makeApiCall(API_CONFIG.ENDPOINTS.DELIVERIES, 'POST', delivery);
+            
+            // Show success message with order number
+            alert(`Order placed successfully! Your order number is: ${response.orderNumber}`);
+            
+            // Reset form
+            deliveryForm.reset();
+        } catch (error) {
+            console.error('Delivery order failed:', error);
+            errorMessage.textContent = 'Failed to place order. Please try again.';
+            errorMessage.style.display = 'block';
+        } finally {
+            // Hide loading state
+            submitButton.disabled = false;
+            loadingSpinner.style.display = 'none';
         }
-
-        // Generate a random token number
-        const tokenNumber = 'DEL-' + Math.floor(100000 + Math.random() * 900000);
-
-        // Create order object
-        const order = {
-            items: cart,
-            total: total,
-            name: document.getElementById('deliveryName').value,
-            address: document.getElementById('deliveryAddress').value,
-            phone: document.getElementById('deliveryPhone').value,
-            email: document.getElementById('deliveryEmail').value,
-            token: tokenNumber,
-            estimatedDeliveryTime: new Date(Date.now() + 90 * 60000) // 90 minutes from now
-        };
-
-        // Here you would typically send this data to your backend API
-        console.log('Order submitted:', order);
-
-        // Show success message with token number and estimated delivery time
-        const deliveryTime = order.estimatedDeliveryTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        alert(`Order placed successfully!\nToken Number: ${tokenNumber}\nEstimated Delivery Time: ${deliveryTime}`);
-
-        // Reset form and cart
-        deliveryForm.reset();
-        cart = [];
-        total = 0;
-        updateCart();
     });
+
+    // Fetch menu items when page loads
+    fetchMenuItems();
 }); 
