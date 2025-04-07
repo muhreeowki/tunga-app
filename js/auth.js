@@ -43,44 +43,28 @@ document.addEventListener('DOMContentLoaded', function() {
 async function handleLogin(event) {
     event.preventDefault();
     
-    const email = document.getElementById('email').value;
+    const username = document.getElementById('email').value; // Using email field for username
     const password = document.getElementById('password').value;
-    const rememberMe = document.getElementById('rememberMe').checked;
     
-    const loginButton = document.getElementById('loginButton');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const errorMessage = document.getElementById('errorMessage');
-
     try {
-        // Show loading state
-        loginButton.disabled = true;
-        loadingSpinner.style.display = 'inline-block';
-        errorMessage.style.display = 'none';
-
-        // Make API call
-        const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/login', 'POST', {
-            email,
+        const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/signin', 'POST', {
+            username,
             password
         });
 
-        // Store token and user data
-        localStorage.setItem(TOKEN_KEY, response.token);
-        localStorage.setItem(USER_KEY, JSON.stringify(response.user));
-        currentUser = response.user;
-
-        // Update UI
-        updateUIForLoggedInUser();
-
-        // Redirect to home page
-        window.location.href = 'index.html';
+        if (response.token) {
+            localStorage.setItem('auth_token', response.token);
+            localStorage.setItem('user', JSON.stringify({
+                id: response.id,
+                username: response.username,
+                email: response.email,
+                roles: response.roles
+            }));
+            window.location.href = 'index.html';
+        }
     } catch (error) {
         console.error('Login failed:', error);
-        errorMessage.textContent = 'Invalid email or password';
-        errorMessage.style.display = 'block';
-    } finally {
-        // Hide loading state
-        loginButton.disabled = false;
-        loadingSpinner.style.display = 'none';
+        alert(error.message || 'Login failed. Please try again.');
     }
 }
 
@@ -88,59 +72,32 @@ async function handleLogin(event) {
 async function handleRegistration(event) {
     event.preventDefault();
     
-    const fullName = document.getElementById('fullName').value;
+    const username = document.getElementById('fullName').value; // Using fullName field for username
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    const phone = document.getElementById('phone').value;
     const role = document.getElementById('role').value;
     
-    const registerButton = document.getElementById('registerButton');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const errorMessage = document.getElementById('errorMessage');
-
-    // Validate password
     if (password !== confirmPassword) {
-        errorMessage.textContent = 'Passwords do not match';
-        errorMessage.style.display = 'block';
-        return;
-    }
-
-    // Validate role
-    if (!role) {
-        errorMessage.textContent = 'Please select an account type';
-        errorMessage.style.display = 'block';
+        alert('Passwords do not match');
         return;
     }
 
     try {
-        // Show loading state
-        registerButton.disabled = true;
-        loadingSpinner.style.display = 'inline-block';
-        errorMessage.style.display = 'none';
-
-        // Make API call with roles as a Set
         const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/signup', 'POST', {
-            fullName,
+            username,
             email,
             password,
-            phone,
-            roles: [role] // Send role as an array which will be converted to Set on the backend
+            role: [role] // Send role as an array which will be converted to Set on the backend
         });
 
-        // Show success message
-        alert('Registration successful! Please check your email to verify your account.');
-        
-        // Redirect to login page
-        window.location.href = 'login.html';
+        if (response.message) {
+            alert(response.message);
+            window.location.href = 'login.html';
+        }
     } catch (error) {
         console.error('Registration failed:', error);
-        errorMessage.textContent = error.message || 'Registration failed. Please try again.';
-        errorMessage.style.display = 'block';
-    } finally {
-        // Hide loading state
-        registerButton.disabled = false;
-        loadingSpinner.style.display = 'none';
+        alert(error.message || 'Registration failed. Please try again.');
     }
 }
 
