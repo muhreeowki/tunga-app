@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #f0f4f8, #ffffff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2e2e2e;
+        }
+
+        .email-wrapper {
+            max-width: 640px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .email-header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .email-content {
+            padding: 30px 40px;
+        }
+
+        .email-content p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin: 16px 0;
+        }
+
+        .email-content .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #43cea2;
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(67, 206, 162, 0.3);
+            transition: background 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #2cb184;
+        }
+
+        .email-footer {
+            background-color: #f9f9f9;
+            text-align: center;
+            font-size: 13px;
+            color: #999999;
+            padding: 24px;
+            border-top: 1px solid #eeeeee;
+        }
+
+        @media (max-width: 640px) {
+            .email-content {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-wrapper">
+    <div class="email-header">
+        <h1>Verify Your Email</h1>
+    </div>
+    <div class="email-content">
+        <p>Hello <strong th:text="${name}">User</strong>,</p>
+        <p>Thank you for registering with <strong>Fun N Food Restaurant</strong>! To complete your account setup, please verify your email address by clicking the button below:</p>
+
+        <div class="button-container">
+            <a class="button" th:href="${verificationUrl}">Verify Email Address</a>
+        </div>
+
+        <p>If the button doesn't work, copy and paste this link into your browser:</p>
+        <p style="word-break: break-all;" th:text="${verificationUrl}">https://example.com/verify?token=abc123</p>
+
+        <p><strong>Note:</strong> This link will expire in 24 hours for your security.</p>
+        <p>If you didn’t create an account, you can safely ignore this email.</p>
+    </div>
+    <div class="email-footer">
+        &copy; 2025 Fun N Food Restaurant. All rights reserved.<br>
+        This is an automated email – please do not reply.
+    </div>
+</div>
+</body>
+</html>

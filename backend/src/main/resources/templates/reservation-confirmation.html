@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservation Confirmation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #f0f4f8, #ffffff);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #2e2e2e;
+        }
+
+        .email-container {
+            max-width: 640px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .email-header {
+            background: linear-gradient(to right, #43cea2, #185a9d);
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .email-header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .email-body {
+            padding: 30px 40px;
+        }
+
+        .email-body p {
+            font-size: 15px;
+            line-height: 1.7;
+            margin: 0 0 16px 0;
+        }
+
+        .reservation-details {
+            background-color: #f5faff;
+            border-left: 4px solid #43cea2;
+            padding: 20px 25px;
+            border-radius: 6px;
+            margin: 24px 0;
+        }
+
+        .reservation-details p {
+            margin: 8px 0;
+            font-size: 14.5px;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #43cea2;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #2cba93;
+        }
+
+        .email-footer {
+            text-align: center;
+            font-size: 13px;
+            color: #999999;
+            padding: 24px;
+            background-color: #f8f8f8;
+        }
+
+        @media (max-width: 640px) {
+            .email-body {
+                padding: 25px;
+            }
+
+            .reservation-details {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="email-header">
+        <h1>Reservation Confirmed</h1>
+    </div>
+    <div class="email-body">
+        <p>Hi <strong th:text="${name}">Guest</strong>,</p>
+        <p>Thank you for booking your table at <strong th:text="${restaurant}">Our Restaurant</strong>! We’re thrilled to have you dine with us.</p>
+
+        <div class="reservation-details">
+            <p><strong>Date:</strong> <span th:text="${date}">April 8, 2025</span></p>
+            <p><strong>Time:</strong> <span th:text="${time}">7:00 PM</span></p>
+            <p><strong>Guests:</strong> <span th:text="${guests}">2</span></p>
+            <p><strong>Confirmation Code:</strong> <span th:text="${token}">RES-ABC123</span></p>
+        </div>
+
+        <p>If you need to modify or cancel your reservation, please reach out to us at least 24 hours in advance.</p>
+
+        <a href="#" class="button">Manage Reservation</a>
+    </div>
+    <div class="email-footer">
+        &copy; 2025 FunnFood Restaurant<br>
+        This email was sent automatically — please do not reply.
+    </div>
+</div>
+</body>
+</html>
