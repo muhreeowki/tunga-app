@@ -3,7 +3,6 @@ class Cart {
     constructor() {
         this.items = [];
         this.loadCart();
-        this.updateCartDisplay();
         this.setupEventListeners();
     }
 
@@ -12,21 +11,40 @@ class Cart {
         if (savedCart) {
             this.items = JSON.parse(savedCart);
         }
+        this.updateCartDisplay();
     }
 
     saveCart() {
         localStorage.setItem('cart', JSON.stringify(this.items));
     }
 
-    addItem(item) {
-        const existingItem = this.items.find(i => i.id === item.id);
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            this.items.push({ ...item, quantity: 1 });
+    async addItem(itemId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/menu/items/${itemId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch item details');
+            }
+            const item = await response.json();
+            
+            const existingItem = this.items.find(i => i.id === item.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                this.items.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: 1
+                });
+            }
+            
+            this.saveCart();
+            this.updateCartDisplay();
+            this.showNotification('Item added to cart!');
+        } catch (error) {
+            console.error('Error adding item to cart:', error);
+            alert('Failed to add item to cart. Please try again.');
         }
-        this.saveCart();
-        this.updateCartDisplay();
     }
 
     removeItem(itemId) {
@@ -44,88 +62,121 @@ class Cart {
         }
     }
 
-    clearCart() {
-        this.items = [];
-        this.saveCart();
-        this.updateCartDisplay();
-    }
-
-    calculateSubtotal() {
+    getTotal() {
         return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
     }
 
-    calculateTax() {
-        return this.calculateSubtotal() * 0.1; // 10% tax
-    }
+    setupEventListeners() {
+        // Handle add to cart buttons from menu
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-to-cart')) {
+                const itemId = e.target.dataset.itemId;
+                this.addItem(itemId);
+            }
+        });
 
-    calculateDeliveryFee() {
-        return this.items.length > 0 ? 5.00 : 0; // $5 delivery fee
-    }
+        // Handle cart item quantity changes
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('cart-item-quantity')) {
+                const itemId = e.target.dataset.itemId;
+                const quantity = parseInt(e.target.value);
+                this.updateQuantity(itemId, quantity);
+            }
+        });
 
-    calculateTotal() {
-        return this.calculateSubtotal() + this.calculateTax() + this.calculateDeliveryFee();
+        // Handle remove item buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-item')) {
+                const itemId = e.target.dataset.itemId;
+                this.removeItem(itemId);
+            }
+        });
+
+        // Handle checkout button
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener('click', () => this.handleCheckout());
+        }
     }
 
     updateCartDisplay() {
-        const cartItemsContainer = document.getElementById('cartItems');
-        const emptyCartMessage = document.getElementById('emptyCartMessage');
-        const subtotalElement = document.getElementById('subtotal');
-        const taxElement = document.getElementById('tax');
-        const deliveryFeeElement = document.getElementById('deliveryFee');
-        const totalElement = document.getElementById('total');
-        const checkoutButton = document.getElementById('checkoutButton');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const cartCount = document.getElementById('cartCount');
 
-        if (this.items.length === 0) {
-            cartItemsContainer.style.display = 'none';
-            emptyCartMessage.style.display = 'block';
-            checkoutButton.disabled = true;
-        } else {
-            cartItemsContainer.style.display = 'block';
-            emptyCartMessage.style.display = 'none';
-            checkoutButton.disabled = false;
-
-            cartItemsContainer.innerHTML = this.items.map(item => `
-                <div class="cart-item mb-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="mb-1">${item.name}</h5>
-                            <p class="mb-1">$${item.price.toFixed(2)}</p>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <div class="input-group" style="width: 120px;">
-                                <button class="btn btn-outline-secondary" type="button" onclick="cart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
-                                <input type="number" class="form-control text-center" value="${item.quantity}" min="1" onchange="cart.updateQuantity(${item.id}, this.value)">
-                                <button class="btn btn-outline-secondary" type="button" onclick="cart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-                            </div>
-                            <button class="btn btn-danger ms-2" onclick="cart.removeItem(${item.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
+        if (cartItems) {
+            cartItems.innerHTML = this.items.map(item => `
+                <div class="cart-item">
+                    <div class="item-details">
+                        <h5>${item.name}</h5>
+                        <p>$${item.price.toFixed(2)}</p>
                     </div>
+                    <div class="item-quantity">
+                        <input type="number" class="cart-item-quantity" 
+                               data-item-id="${item.id}" 
+                               value="${item.quantity}" 
+                               min="1">
+                    </div>
+                    <button class="btn btn-danger remove-item" data-item-id="${item.id}">
+                        Remove
+                    </button>
                 </div>
             `).join('');
         }
 
-        subtotalElement.textContent = `$${this.calculateSubtotal().toFixed(2)}`;
-        taxElement.textContent = `$${this.calculateTax().toFixed(2)}`;
-        deliveryFeeElement.textContent = `$${this.calculateDeliveryFee().toFixed(2)}`;
-        totalElement.textContent = `$${this.calculateTotal().toFixed(2)}`;
+        if (cartTotal) {
+            cartTotal.textContent = `$${this.getTotal().toFixed(2)}`;
+        }
+
+        if (cartCount) {
+            const totalItems = this.items.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
     }
 
-    setupEventListeners() {
-        document.getElementById('checkoutButton').addEventListener('click', () => {
-            if (this.items.length === 0) return;
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
 
-            // Check if user is logged in
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    async handleCheckout() {
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+        
+        if (!token) {
+            window.location.href = '/login.html';
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/orders`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    items: this.items
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create order');
             }
 
-            // Redirect to delivery page for checkout
-            window.location.href = 'delivery.html';
-        });
+            this.items = [];
+            this.saveCart();
+            this.updateCartDisplay();
+            window.location.href = '/orders.html';
+        } catch (error) {
+            console.error('Error during checkout:', error);
+            alert('Failed to complete checkout. Please try again.');
+        }
     }
 }
 

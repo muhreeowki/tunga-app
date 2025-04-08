@@ -8,7 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fetch menu items on page load
     async function fetchMenuItems() {
         try {
-            const items = await makeApiCall(API_CONFIG.ENDPOINTS.MENU);
+            const response = await fetch(`http://localhost:8080/menu/items`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch menu items');
+            }
+            const items = await response.json();
             displayMenuItems(items);
         } catch (error) {
             console.error('Failed to fetch menu items:', error);
@@ -21,10 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
         menuItems.innerHTML = '';
         items.forEach(item => {
             const div = document.createElement('div');
-            div.className = 'menu-item';
+            div.className = 'menu-item mb-3';
             div.innerHTML = `
-                <input type="checkbox" id="item-${item.id}" value="${item.id}">
-                <label for="item-${item.id}">${item.name} - $${item.price}</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="item-${item.id}" value="${item.id}">
+                    <label class="form-check-label" for="item-${item.id}">
+                        ${item.name} - $${item.price.toFixed(2)}
+                    </label>
+                </div>
             `;
             menuItems.appendChild(div);
         });
@@ -42,7 +50,14 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Get selected items
             const selectedItems = Array.from(document.querySelectorAll('#menuItems input:checked'))
-                .map(checkbox => checkbox.value);
+                .map(checkbox => ({
+                    id: parseInt(checkbox.value),
+                    quantity: 1
+                }));
+
+            if (selectedItems.length === 0) {
+                throw new Error('Please select at least one item');
+            }
 
             // Create delivery object
             const delivery = {
@@ -54,17 +69,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 specialInstructions: document.getElementById('specialInstructions').value
             };
 
+            // Get auth token
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+            if (!token) {
+                throw new Error('Please login to place an order');
+            }
+
             // Make API call
-            const response = await makeApiCall(API_CONFIG.ENDPOINTS.DELIVERIES, 'POST', delivery);
+            const response = await fetch(`http://localhost:8080/orders`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(delivery)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to place order');
+            }
+
+            const result = await response.json();
             
             // Show success message with order number
-            alert(`Order placed successfully! Your order number is: ${response.orderNumber}`);
+            alert(`Order placed successfully! Your order number is: ${result.orderNumber}`);
             
             // Reset form
             deliveryForm.reset();
+            window.location.href = '/orders.html';
         } catch (error) {
             console.error('Delivery order failed:', error);
-            errorMessage.textContent = 'Failed to place order. Please try again.';
+            errorMessage.textContent = error.message || 'Failed to place order. Please try again.';
             errorMessage.style.display = 'block';
         } finally {
             // Hide loading state

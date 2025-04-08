@@ -76,7 +76,7 @@ const auth = {
 
     // Setup protected routes
     setupProtectedRoutes() {
-        const protectedRoutes = ['profile.html', 'cart.html', 'delivery.html'];
+        const protectedRoutes = ['cart.html', 'delivery.html'];
         const currentPage = window.location.pathname.split('/').pop();
         
         if (protectedRoutes.includes(currentPage) && !this.isAuthenticated) {

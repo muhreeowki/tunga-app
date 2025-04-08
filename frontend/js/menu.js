@@ -191,4 +191,50 @@ const menuOperations = {
 // Initialize menu when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     menuOperations.initializeMenu();
-}); 
+});
+
+// Menu functionality
+class Menu {
+    constructor() {
+        this.items = [];
+        this.loadMenuItems();
+    }
+
+    async loadMenuItems() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/menu/items`);
+            if (!response.ok) {
+                throw new Error('Failed to load menu items');
+            }
+            this.items = await response.json();
+            this.renderMenuItems();
+        } catch (error) {
+            console.error('Error loading menu items:', error);
+            alert('Failed to load menu items. Please try again later.');
+        }
+    }
+
+    renderMenuItems() {
+        const menuContainer = document.getElementById('menuItems');
+        if (!menuContainer) return;
+
+        menuContainer.innerHTML = this.items.map(item => `
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="${item.image_url || 'https://via.placeholder.com/300x200'}" class="card-img-top" alt="${item.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${item.name}</h5>
+                        <p class="card-text">${item.description}</p>
+                        <p class="price">$${item.price.toFixed(2)}</p>
+                        <button class="btn btn-primary add-to-cart" data-item-id="${item.id}">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// Initialize menu
+const menu = new Menu(); 
