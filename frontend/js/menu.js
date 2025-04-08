@@ -33,9 +33,22 @@ const menuOperations = {
         }
     },
 
+    // Fetch non-vegetarian items
+    async fetchNonVegetarianItems() {
+        try {
+            const allItems = await Promise.all(
+                (await this.fetchCategories()).map(cat => this.fetchItemsByCategory(cat.id))
+            );
+            return allItems.flat().filter(item => !item.vegetarian);
+        } catch (error) {
+            console.error('Error fetching non-vegetarian items:', error);
+            throw error;
+        }
+    },
+
     // Render menu items
-    renderMenuItems(items) {
-        const menuContainer = document.getElementById('menuItems');
+    renderMenuItems(items, containerId = 'menuItems') {
+        const menuContainer = document.getElementById(containerId);
         if (!menuContainer) return;
 
         menuContainer.innerHTML = items.map(item => `
@@ -82,6 +95,9 @@ const menuOperations = {
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#vegetarian" role="tab">Vegetarian</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#non-vegetarian" role="tab">Non-Vegetarian</a>
+            </li>
         `;
     },
 
@@ -118,12 +134,24 @@ const menuOperations = {
                 this.renderMenuItems(vegetarianItems, 'vegetarian-items');
             }
 
+            // Fetch and render non-vegetarian items
+            const nonVegetarianItems = await this.fetchNonVegetarianItems();
+            if (tabContent) {
+                tabContent.innerHTML += `
+                    <div class="tab-pane fade" id="non-vegetarian" role="tabpanel">
+                        <div class="row" id="non-vegetarian-items"></div>
+                    </div>
+                `;
+                this.renderMenuItems(nonVegetarianItems, 'non-vegetarian-items');
+            }
+
             // Add event listeners for tab changes
             const tabLinks = document.querySelectorAll('.nav-link');
             tabLinks.forEach(link => {
                 link.addEventListener('click', async (e) => {
                     e.preventDefault();
                     const target = e.target.getAttribute('href').substring(1);
+                    
                     if (target === 'all') {
                         // Show all items
                         const allItems = await Promise.all(
@@ -133,6 +161,13 @@ const menuOperations = {
                     } else if (target === 'vegetarian') {
                         const items = await this.fetchVegetarianItems();
                         this.renderMenuItems(items, 'vegetarian-items');
+                    } else if (target === 'non-vegetarian') {
+                        const items = await this.fetchNonVegetarianItems();
+                        this.renderMenuItems(items, 'non-vegetarian-items');
+                    } else if (target.startsWith('category-')) {
+                        const categoryId = target.split('-')[1];
+                        const items = await this.fetchItemsByCategory(categoryId);
+                        this.renderMenuItems(items, `${target}-items`);
                     }
                 });
             });

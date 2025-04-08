@@ -1,3 +1,31 @@
+// Cookie management functions
+const cookieManager = {
+    // Set a cookie with specified name, value, and expiration days
+    setCookie(name, value, days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + date.toUTCString();
+        document.cookie = name + "=" + value + ";" + expires + ";path=/;SameSite=Strict";
+    },
+
+    // Get a cookie value by name
+    getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    },
+
+    // Delete a cookie by name
+    deleteCookie(name) {
+        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;SameSite=Strict';
+    }
+};
+
 // Authentication state management
 const auth = {
     isAuthenticated: false,
@@ -12,22 +40,24 @@ const auth = {
         this.setupProtectedRoutes();
     },
 
-    // Load auth state from localStorage
+    // Load auth state from cookies
     loadAuthState() {
-        const token = localStorage.getItem('token');
-        const user = localStorage.getItem('user');
+        const token = cookieManager.getCookie('token');
+        const user = cookieManager.getCookie('user');
         if (token && user) {
             this.token = token;
-            this.user = JSON.parse(user);
+            this.user = JSON.parse(decodeURIComponent(user));
             this.isAuthenticated = true;
             console.log('Auth state loaded:', { user: this.user, token: this.token });
         }
     },
 
-    // Save auth state to localStorage
+    // Save auth state to cookies
     saveAuthState(token, user) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
+        // Set token cookie to expire in 7 days
+        cookieManager.setCookie('token', token, 7);
+        // Set user cookie to expire in 7 days
+        cookieManager.setCookie('user', encodeURIComponent(JSON.stringify(user)), 7);
         this.token = token;
         this.user = user;
         this.isAuthenticated = true;
@@ -36,8 +66,8 @@ const auth = {
 
     // Clear auth state
     clearAuthState() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        cookieManager.deleteCookie('token');
+        cookieManager.deleteCookie('user');
         this.token = null;
         this.user = null;
         this.isAuthenticated = false;
@@ -208,11 +238,11 @@ function makeApiCall(endpoint, method = 'GET', data = null) {
         method,
         headers: {
             ...API_CONFIG.HEADERS
-        }
+        },
     };
 
     // Only add Authorization header if we have a token and it's not a /signin or /signup request
-    const token = localStorage.getItem('token');
+    const token = cookieManager.getCookie('token');
     if (token && !endpoint.includes('/signin') && !endpoint.includes('/signup')) {
         options.headers['Authorization'] = `Bearer ${token}`;
     }
