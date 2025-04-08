@@ -63,8 +63,8 @@
                         <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
                         <form id="registerForm">
                             <div class="mb-3">
-                                <label for="fullName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="fullName" required>
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" required>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
@@ -77,10 +77,6 @@
                             <div class="mb-3">
                                 <label for="confirmPassword" class="form-label">Confirm Password</label>
                                 <input type="password" class="form-control" id="confirmPassword" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="phone" required>
                             </div>
                             <div class="mb-3">
                                 <label for="role" class="form-label">Role</label>
@@ -138,10 +134,9 @@
             }
             
             const userData = {
-                fullName: document.getElementById('fullName').value,
+                username: document.getElementById('username').value,
                 email: document.getElementById('email').value,
                 password: password,
-                phone: document.getElementById('phone').value,
                 role: document.getElementById('role').value
             };
             

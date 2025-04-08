@@ -9,6 +9,7 @@ const auth = {
         this.loadAuthState();
         this.updateUI();
         this.setupEventListeners();
+        this.setupProtectedRoutes();
     },
 
     // Load auth state from localStorage
@@ -19,6 +20,7 @@ const auth = {
             this.token = token;
             this.user = JSON.parse(user);
             this.isAuthenticated = true;
+            console.log('Auth state loaded:', { user: this.user, token: this.token });
         }
     },
 
@@ -29,6 +31,7 @@ const auth = {
         this.token = token;
         this.user = user;
         this.isAuthenticated = true;
+        console.log('Auth state saved:', { user: this.user, token: this.token });
     },
 
     // Clear auth state
@@ -38,6 +41,17 @@ const auth = {
         this.token = null;
         this.user = null;
         this.isAuthenticated = false;
+        console.log('Auth state cleared');
+    },
+
+    // Setup protected routes
+    setupProtectedRoutes() {
+        const protectedRoutes = ['profile.html', 'cart.html', 'delivery.html'];
+        const currentPage = window.location.pathname.split('/').pop();
+        
+        if (protectedRoutes.includes(currentPage) && !this.isAuthenticated) {
+            window.location.href = 'login.html';
+        }
     },
 
     // Update UI based on auth state
@@ -54,7 +68,7 @@ const auth = {
             if (profileNavItem) profileNavItem.style.display = 'block';
             if (logoutNavItem) logoutNavItem.style.display = 'block';
             if (userGreeting) {
-                userGreeting.textContent = `Welcome, ${this.user.fullName}`;
+                userGreeting.textContent = `Welcome, ${this.user.username}`;
                 userGreeting.style.display = 'block';
             }
         } else {
@@ -78,15 +92,25 @@ const auth = {
     },
 
     // Handle login
-    async login(email, password) {
+    async login(username, password) {
         try {
-            const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/login', 'POST', {
-                email,
+            const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/signin', 'POST', {
+                username,
                 password
             });
 
-            if (response.token) {
-                this.saveAuthState(response.token, response.user);
+            if (response.accessToken) {
+                // Format user data according to the new response structure
+                const userData = {
+                    id: response.id,
+                    username: response.username,
+                    email: response.email,
+                    emailVerified: response.emailVerified,
+                    roles: response.roles
+                };
+                
+                // Save the access token and user data
+                this.saveAuthState(response.accessToken, userData);
                 this.updateUI();
                 return { success: true };
             } else {
@@ -102,15 +126,23 @@ const auth = {
     async register(userData) {
         try {
             const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/signup', 'POST', {
-                fullName: userData.fullName,
+                username: userData.username,
                 email: userData.email,
                 password: userData.password,
-                phone: userData.phone,
                 roles: [userData.role]
             });
 
-            if (response.token) {
-                this.saveAuthState(response.token, response.user);
+            if (response.accessToken) {
+                // Format user data according to the new response structure
+                const userData = {
+                    id: response.id,
+                    username: response.username,
+                    email: response.email,
+                    emailVerified: response.emailVerified,
+                    roles: response.roles
+                };
+                
+                this.saveAuthState(response.accessToken, userData);
                 this.updateUI();
                 return { success: true };
             } else {
@@ -187,9 +219,9 @@ function makeApiCall(endpoint, method = 'GET', data = null) {
         }
     };
 
-    // Only add Authorization header if we have a token and it's not a login/signup request
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (token && !endpoint.includes('/login') && !endpoint.includes('/signup')) {
+    // Only add Authorization header if we have a token and it's not a /signin or /signup request
+    const token = localStorage.getItem('token');
+    if (token && !endpoint.includes('/signin') && !endpoint.includes('/signup')) {
         options.headers['Authorization'] = `Bearer ${token}`;
     }
 
@@ -200,6 +232,7 @@ function makeApiCall(endpoint, method = 'GET', data = null) {
     return fetch(url, options)
         .then(async response => {
             const data = await response.json();
+            console.log(data);
             if (!response.ok) {
                 throw new Error(data.message || `HTTP error! status: ${response.status}`);
             }
