@@ -1,0 +1,65 @@
+2025-04-08 11:31:23.259 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-08 11:31:23.430 [main] INFO  c.f.restaurant.FunNFoodApplication - Starting FunNFoodApplication using Java 21.0.6 with PID 70727 (/home/muh/Development/tunga/tunga-project/backend/target/classes started by muh in /home/muh/Development/tunga/tunga-project)
+2025-04-08 11:31:23.433 [main] DEBUG c.f.restaurant.FunNFoodApplication - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-08 11:31:23.436 [main] INFO  c.f.restaurant.FunNFoodApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-08 11:31:26.601 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-08 11:31:27.377 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 670 ms. Found 14 JPA repository interfaces.
+2025-04-08 11:31:30.442 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-04-08 11:31:30.468 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-04-08 11:31:30.473 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-08 11:31:30.474 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-08 11:31:30.594 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-08 11:31:30.599 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 7028 ms
+2025-04-08 11:31:31.463 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-08 11:31:31.620 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-08 11:31:31.730 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-04-08 11:31:32.266 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-08 11:31:32.319 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-04-08 11:31:32.816 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:tunga user=SA
+2025-04-08 11:31:32.833 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-04-08 11:31:32.884 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-08 11:31:32.941 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-08 11:31:35.793 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-08 11:31:36.033 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-08 11:31:36.558 [main] DEBUG c.f.r.security.jwt.AuthTokenFilter - Filter 'authenticationJwtTokenFilter' configured for use
+2025-04-08 11:31:36.757 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-08 11:31:38.999 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-04-08 11:31:39.001 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-04-08 11:31:42.985 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-08 11:31:44.323 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:tunga'
+2025-04-08 11:31:44.478 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-04-08 11:31:44.508 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-04-08 11:31:44.534 [main] INFO  c.f.restaurant.FunNFoodApplication - Started FunNFoodApplication in 22.425 seconds (process running for 23.016)
+2025-04-08 11:33:02.028 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-08 11:33:02.029 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-04-08 11:33:02.033 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2025-04-08 11:33:02.320 [http-nio-8080-exec-2] INFO  c.f.r.controller.AuthController - Attempting to register new user: kate@gmail.com
+2025-04-08 11:33:02.512 [http-nio-8080-exec-2] INFO  c.f.r.controller.AuthController - No roles specified for user kate@gmail.com, defaulting to ROLE_USER
+2025-04-08 11:33:02.527 [http-nio-8080-exec-2] INFO  c.f.r.controller.AuthController - User kate@gmail.com successfully registered with ID: 1
+2025-04-08 11:33:06.506 [http-nio-8080-exec-2] INFO  c.f.r.controller.AuthController - Verification email sent to kate@gmail.com
+2025-04-08 11:35:21.855 [http-nio-8080-exec-5] INFO  c.f.r.controller.AuthController - Attempting to register new user: kate
+2025-04-08 11:35:21.868 [http-nio-8080-exec-5] WARN  c.f.r.controller.AuthController - Registration failed: Email kate@gmail.com is already in use
+2025-04-08 11:35:50.069 [http-nio-8080-exec-7] INFO  c.f.r.controller.AuthController - Attempting to register new user: jake
+2025-04-08 11:35:50.173 [http-nio-8080-exec-7] INFO  c.f.r.controller.AuthController - No roles specified for user jake, defaulting to ROLE_USER
+2025-04-08 11:35:50.177 [http-nio-8080-exec-7] INFO  c.f.r.controller.AuthController - User jake successfully registered with ID: 2
+2025-04-08 11:35:53.199 [http-nio-8080-exec-7] INFO  c.f.r.controller.AuthController - Verification email sent to jake@gmail
+2025-04-08 11:42:16.494 [http-nio-8080-exec-10] INFO  c.f.r.controller.AuthController - Attempting to register new user: jake
+2025-04-08 11:42:16.500 [http-nio-8080-exec-10] WARN  c.f.r.controller.AuthController - Registration failed: Username jake is already taken
+2025-04-08 11:42:38.904 [http-nio-8080-exec-2] INFO  c.f.r.controller.AuthController - Attempting to register new user: lake
+2025-04-08 11:42:39.014 [http-nio-8080-exec-2] INFO  c.f.r.controller.AuthController - No roles specified for user lake, defaulting to ROLE_USER
+2025-04-08 11:42:39.021 [http-nio-8080-exec-2] INFO  c.f.r.controller.AuthController - User lake successfully registered with ID: 3
+2025-04-08 11:42:42.076 [http-nio-8080-exec-2] INFO  c.f.r.controller.AuthController - Verification email sent to lake@gmail.com
+2025-04-08 11:43:29.553 [http-nio-8080-exec-4] INFO  c.f.r.controller.AuthController - Attempting to authenticate user: lake
+2025-04-08 11:43:29.797 [http-nio-8080-exec-4] INFO  c.f.r.controller.AuthController - User lake successfully authenticated with roles: [ROLE_USER]
+2025-04-08 11:44:06.854 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-08 11:44:06.857 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-08 11:44:06.874 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-08 11:44:06.879 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-04-08 11:44:06.882 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

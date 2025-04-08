@@ -132,21 +132,13 @@ const auth = {
                 roles: [userData.role]
             });
 
-            if (response.accessToken) {
-                // Format user data according to the new response structure
-                const userData = {
-                    id: response.id,
-                    username: response.username,
-                    email: response.email,
-                    emailVerified: response.emailVerified,
-                    roles: response.roles
+            if (response.success) {
+                return { 
+                    success: true,
+                    message: response.message || 'Registration successful! Please check your email to verify your account.'
                 };
-                
-                this.saveAuthState(response.accessToken, userData);
-                this.updateUI();
-                return { success: true };
             } else {
-                throw new Error('Invalid response format');
+                throw new Error(response.message || 'Registration failed');
             }
         } catch (error) {
             console.error('Registration error:', error);
