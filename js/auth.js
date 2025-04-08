@@ -1,105 +1,152 @@
-// Authentication state
-let currentUser = null;
-const TOKEN_KEY = 'auth_token';
-const USER_KEY = 'user_data';
+// Authentication state management
+const auth = {
+    isAuthenticated: false,
+    user: null,
+    token: null,
 
-// Initialize authentication
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if user is already logged in
-    const token = localStorage.getItem(TOKEN_KEY);
-    const userData = localStorage.getItem(USER_KEY);
-    
-    if (token && userData) {
-        currentUser = JSON.parse(userData);
-        updateUIForLoggedInUser();
-    }
+    // Initialize auth state
+    init() {
+        this.loadAuthState();
+        this.updateUI();
+        this.setupEventListeners();
+    },
 
-    // Setup login form
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
+    // Load auth state from localStorage
+    loadAuthState() {
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        if (token && user) {
+            this.token = token;
+            this.user = JSON.parse(user);
+            this.isAuthenticated = true;
+        }
+    },
 
-    // Setup registration form
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', handleRegistration);
-    }
+    // Save auth state to localStorage
+    saveAuthState(token, user) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        this.token = token;
+        this.user = user;
+        this.isAuthenticated = true;
+    },
 
-    // Setup Google login
-    const googleLoginBtn = document.getElementById('googleLogin');
-    if (googleLoginBtn) {
-        googleLoginBtn.addEventListener('click', handleGoogleLogin);
-    }
+    // Clear auth state
+    clearAuthState() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        this.token = null;
+        this.user = null;
+        this.isAuthenticated = false;
+    },
 
-    // Setup forgot password
-    const forgotPasswordLink = document.getElementById('forgotPassword');
-    if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener('click', handleForgotPassword);
+    // Update UI based on auth state
+    updateUI() {
+        const loginNavItem = document.getElementById('loginNavItem');
+        const registerNavItem = document.getElementById('registerNavItem');
+        const profileNavItem = document.getElementById('profileNavItem');
+        const logoutNavItem = document.getElementById('logoutNavItem');
+        const userGreeting = document.getElementById('userGreeting');
+
+        if (this.isAuthenticated) {
+            if (loginNavItem) loginNavItem.style.display = 'none';
+            if (registerNavItem) registerNavItem.style.display = 'none';
+            if (profileNavItem) profileNavItem.style.display = 'block';
+            if (logoutNavItem) logoutNavItem.style.display = 'block';
+            if (userGreeting) {
+                userGreeting.textContent = `Welcome, ${this.user.fullName}`;
+                userGreeting.style.display = 'block';
+            }
+        } else {
+            if (loginNavItem) loginNavItem.style.display = 'block';
+            if (registerNavItem) registerNavItem.style.display = 'block';
+            if (profileNavItem) profileNavItem.style.display = 'none';
+            if (logoutNavItem) logoutNavItem.style.display = 'none';
+            if (userGreeting) userGreeting.style.display = 'none';
+        }
+    },
+
+    // Setup event listeners
+    setupEventListeners() {
+        const logoutLink = document.getElementById('logoutLink');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.logout();
+            });
+        }
+    },
+
+    // Handle login
+    async login(email, password) {
+        try {
+            const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/login', 'POST', {
+                email,
+                password
+            });
+
+            if (response.token) {
+                this.saveAuthState(response.token, response.user);
+                this.updateUI();
+                return { success: true };
+            } else {
+                throw new Error('Invalid response format');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            return { success: false, error: error.message };
+        }
+    },
+
+    // Handle registration
+    async register(userData) {
+        try {
+            const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/signup', 'POST', {
+                fullName: userData.fullName,
+                email: userData.email,
+                password: userData.password,
+                phone: userData.phone,
+                roles: [userData.role]
+            });
+
+            if (response.token) {
+                this.saveAuthState(response.token, response.user);
+                this.updateUI();
+                return { success: true };
+            } else {
+                throw new Error('Invalid response format');
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            return { success: false, error: error.message };
+        }
+    },
+
+    // Handle logout
+    logout() {
+        this.clearAuthState();
+        this.updateUI();
+        window.location.href = 'index.html';
+    },
+
+    // Get auth headers for API calls
+    getAuthHeaders() {
+        if (this.token) {
+            return {
+                'Authorization': `Bearer ${this.token}`,
+                'Content-Type': 'application/json'
+            };
+        }
+        return {
+            'Content-Type': 'application/json'
+        };
     }
+};
+
+// Initialize auth when the script loads
+document.addEventListener('DOMContentLoaded', () => {
+    auth.init();
 });
-
-// Handle login
-async function handleLogin(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('email').value; // Using email field for username
-    const password = document.getElementById('password').value;
-    
-    try {
-        const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/signin', 'POST', {
-            username,
-            password
-        });
-
-        if (response.token) {
-            localStorage.setItem('auth_token', response.token);
-            localStorage.setItem('user', JSON.stringify({
-                id: response.id,
-                username: response.username,
-                email: response.email,
-                roles: response.roles
-            }));
-            window.location.href = 'index.html';
-        }
-    } catch (error) {
-        console.error('Login failed:', error);
-        alert(error.message || 'Login failed. Please try again.');
-    }
-}
-
-// Handle registration
-async function handleRegistration(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('fullName').value; // Using fullName field for username
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const role = document.getElementById('role').value;
-    
-    if (password !== confirmPassword) {
-        alert('Passwords do not match');
-        return;
-    }
-
-    try {
-        const response = await makeApiCall(API_CONFIG.ENDPOINTS.AUTH + '/signup', 'POST', {
-            username,
-            email,
-            password,
-            role: [role] // Send role as an array which will be converted to Set on the backend
-        });
-
-        if (response.message) {
-            alert(response.message);
-            window.location.href = 'login.html';
-        }
-    } catch (error) {
-        console.error('Registration failed:', error);
-        alert(error.message || 'Registration failed. Please try again.');
-    }
-}
 
 // Handle Google login
 async function handleGoogleLogin() {
@@ -128,46 +175,6 @@ async function handleForgotPassword(event) {
         console.error('Password reset failed:', error);
         alert('Failed to send password reset instructions. Please try again.');
     }
-}
-
-// Update UI for logged in user
-function updateUIForLoggedInUser() {
-    // Update navigation
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        if (link.getAttribute('data-auth') === 'true') {
-            link.style.display = 'block';
-        }
-    });
-
-    // Update user menu
-    const userMenu = document.querySelector('.user-menu');
-    if (userMenu) {
-        userMenu.innerHTML = `
-            <div class="dropdown">
-                <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    ${currentUser.fullName}
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-                    <li><a class="dropdown-item" href="orders.html">My Orders</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#" onclick="handleLogout()">Logout</a></li>
-                </ul>
-            </div>
-        `;
-    }
-}
-
-// Handle logout
-function handleLogout() {
-    // Clear stored data
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    currentUser = null;
-
-    // Redirect to login page
-    window.location.href = 'login.html';
 }
 
 // Add token to API calls

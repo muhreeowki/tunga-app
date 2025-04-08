@@ -1,24 +1,32 @@
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:8080/api',
+    BASE_URL: 'http://localhost:8080',
     ENDPOINTS: {
-        RESERVATIONS: '/reservations',
-        DELIVERIES: '/deliveries',
-        MENU: '/menu',
-        AUTH: '/auth',
-        PROFILE: '/profile',
-        ORDERS: '/orders'
+        AUTH: '/api/auth',
+        MENU: '/api/menu',
+        RESERVATION: '/api/reservations',
+        DELIVERY: '/api/delivery'
     },
     HEADERS: {
         'Content-Type': 'application/json'
     }
 };
 
-// Helper function to make API calls
+// Make API call with JWT token handling
 async function makeApiCall(endpoint, method = 'GET', data = null) {
-    const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+    const url = API_CONFIG.BASE_URL + endpoint;
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    // Add Authorization header if token exists and it's not an auth endpoint
+    const token = localStorage.getItem('token');
+    if (token && !endpoint.includes('/auth/')) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const options = {
         method,
-        headers: API_CONFIG.HEADERS
+        headers
     };
 
     if (data) {
@@ -27,12 +35,22 @@ async function makeApiCall(endpoint, method = 'GET', data = null) {
 
     try {
         const response = await fetch(url, options);
+        const responseData = await response.json();
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // Handle 401 Unauthorized (token expired or invalid)
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+                throw new Error('Session expired. Please login again.');
+            }
+            throw new Error(responseData.message || 'An error occurred');
         }
-        return await response.json();
+
+        return responseData;
     } catch (error) {
-        console.error('API call failed:', error);
+        console.error('API call error:', error);
         throw error;
     }
 } 

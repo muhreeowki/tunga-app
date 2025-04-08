@@ -63,33 +63,17 @@
                         <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
                         <form id="loginForm">
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" required>
-                                <div class="form-text">Enter your username or email address</div>
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" required>
                             </div>
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary" id="loginButton">
-                                    <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                                    Login
-                                </button>
+                                <button type="submit" class="btn btn-primary">Login</button>
                             </div>
                         </form>
-                        <div class="text-center mt-3">
-                            <a href="#" id="forgotPassword">Forgot Password?</a>
-                        </div>
-                        <hr>
-                        <div class="text-center">
-                            <p>Or login with</p>
-                            <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-outline-primary" id="googleLogin">
-                                    <i class="fab fa-google"></i> Google
-                                </button>
-                            </div>
-                        </div>
                         <div class="text-center mt-3">
                             <p>Don't have an account? <a href="register.html">Register</a></p>
                         </div>
@@ -104,5 +88,21 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const result = await auth.login(email, password);
+            
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                alert(result.error || 'Login failed. Please try again.');
+            }
+        });
+    </script>
 </body>
 </html> 
