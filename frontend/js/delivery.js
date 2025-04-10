@@ -477,7 +477,7 @@ document.addEventListener('DOMContentLoaded', function() {
             deliveryForm.reset();
             cart = [];
             updateCartDisplay();
-            window.location.href = '/orders.html';
+            window.location.href = 'order-success.html?orderId=' + result.id + '&ticketCode=' + result.tokenNumber;
         } catch (error) {
             console.error('Delivery order failed:', error);
             errorMessage.textContent = error.message || 'Failed to place order. Please try again.';
