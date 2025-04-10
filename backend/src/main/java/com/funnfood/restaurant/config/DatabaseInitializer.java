@@ -4,9 +4,11 @@ import com.funnfood.restaurant.model.ERole;
 import com.funnfood.restaurant.model.Role;
 import com.funnfood.restaurant.model.MenuCategory;
 import com.funnfood.restaurant.model.MenuItem;
+import com.funnfood.restaurant.model.Restaurant;
 import com.funnfood.restaurant.repository.RoleRepository;
 import com.funnfood.restaurant.repository.MenuCategoryRepository;
 import com.funnfood.restaurant.repository.MenuItemRepository;
+import com.funnfood.restaurant.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -27,9 +29,13 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Autowired
     private MenuItemRepository menuItemRepository;
 
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
     @Override
     public void run(String... args) throws Exception {
         initializeRoles();
+        initializeRestaurants();
         initializeMenuCategories();
         initializeMenuItems();
     }
@@ -47,6 +53,64 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             System.out.println("Roles initialized successfully");
         }
+    }
+
+    private void initializeRestaurants() {
+        if (restaurantRepository.count() == 0) {
+            List<Restaurant> restaurants = Arrays.asList(
+                createRestaurant(
+                    "Tunga Downtown",
+                    "123 Main Street",
+                    "New York",
+                    "NY",
+                    "10001",
+                    "+1 (212) 555-1234",
+                    "downtown@tunga.com",
+                    "Mon-Fri: 11:00 AM - 10:00 PM, Sat-Sun: 10:00 AM - 11:00 PM"
+                ),
+                createRestaurant(
+                    "Tunga Uptown",
+                    "456 Park Avenue",
+                    "New York",
+                    "NY",
+                    "10022",
+                    "+1 (212) 555-5678",
+                    "uptown@tunga.com",
+                    "Mon-Fri: 11:00 AM - 11:00 PM, Sat-Sun: 10:00 AM - 12:00 AM"
+                ),
+                createRestaurant(
+                    "Tunga Brooklyn",
+                    "789 Brooklyn Bridge",
+                    "Brooklyn",
+                    "NY",
+                    "11201",
+                    "+1 (718) 555-9012",
+                    "brooklyn@tunga.com",
+                    "Mon-Fri: 11:00 AM - 10:00 PM, Sat-Sun: 10:00 AM - 11:00 PM"
+                )
+            );
+
+            restaurantRepository.saveAll(restaurants);
+            System.out.println("Restaurants initialized successfully");
+        }
+    }
+
+    private Restaurant createRestaurant(String name, String address, String city, 
+                                      String state, String zipCode, String phone, 
+                                      String email, String operatingHours) {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(name);
+        restaurant.setAddress(address);
+        restaurant.setCity(city);
+        restaurant.setState(state);
+        restaurant.setZipCode(zipCode);
+        restaurant.setPhoneNumber(phone);
+        restaurant.setImageUrl("https://via.placeholder.com/300x200");
+        restaurant.setLatitude(40.7128); // Default to NYC coordinates
+        restaurant.setLongitude(-74.0060);
+        restaurant.setDeliveryRadiusKm(5.0); // Default 5km delivery radius
+        restaurant.setAvgDeliveryTimeMin(30); // Default 30 minutes delivery time
+        return restaurant;
     }
 
     private void initializeMenuCategories() {
