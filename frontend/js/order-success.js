@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const orderId = urlParams.get('orderId');
     const ticketCode = urlParams.get('ticketCode');
 
-    console.log(orderId);
     if (orderId) {
         // Fetch order details from the backend
         fetchOrderDetails(orderId);
@@ -45,7 +44,6 @@ async function fetchOrderDetails(orderId) {
         }
 
         const order = await response.json();
-        console.log(order);
         displayOrderDetails(order);
     } catch (error) {
         console.error('Error fetching order details:', error);

@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMessage.style.display = 'block';
             return;
         }
-
+        
         // Show loading state
         submitButton.disabled = true;
         loadingSpinner.style.display = 'inline-block';
@@ -469,10 +469,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const result = await response.json();
-            
-            // Show success message with order number
-            alert(`Order placed successfully! Your order number is: ${result.tokenNumber}`);
-            
             // Reset form and cart
             deliveryForm.reset();
             cart = [];
