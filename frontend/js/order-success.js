@@ -47,7 +47,7 @@ async function fetchOrderDetails(orderId) {
         displayOrderDetails(order);
     } catch (error) {
         console.error('Error fetching order details:', error);
-        showError('Failed to load order details. Please try again later.');
+        throw new Error('Failed to load order details. Please try again later.');
     }
 }
 
