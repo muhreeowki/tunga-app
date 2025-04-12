@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             // Make API call
-            const response = await makeApiCall(API_CONFIG.ENDPOINTS.RESERVATIONS, 'POST', reservation);
+            const response = await makeApiCall(API_CONFIG.ENDPOINTS.RESERVATION, 'POST', reservation);
             
             // Show success message with token number
             alert(`Reservation successful! Your token number is: ${response.token}`);
