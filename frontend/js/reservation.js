@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Create reservation object
             const reservation = {
+                tableId:1,
                 restaurant: document.getElementById('restaurant').value,
                 reservationDateTime: reservationDateTime.toISOString(),
                 numberOfGuests: document.getElementById('guests').value,
