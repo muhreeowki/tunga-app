@@ -122,4 +122,123 @@ footer {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+/* Scrollable Card Bodies */
+.card-body {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+.card-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.card-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.card-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.card-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Cart Items */
+.cart-item {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* Menu Items */
+.menu-item-card {
+    transition: transform 0.2s;
+}
+
+.menu-item-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        max-height: 50vh !important;
+    }
+}
+
+/* Multi-step Form */
+.step {
+    text-align: center;
+    position: relative;
+    flex: 1;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.step-title {
+    color: #6c757d;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-number {
+    background-color: #007bff;
+    color: white;
+}
+
+.step.active .step-title {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background-color: #e9ecef;
+    margin: 0 10px;
+    position: relative;
+    top: -20px;
+}
+
+.step-content {
+    transition: all 0.3s ease;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .step-title {
+        font-size: 0.8rem;
+    }
+    
+    .step-number {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .step-line {
+        top: -15px;
+    }
 } 
