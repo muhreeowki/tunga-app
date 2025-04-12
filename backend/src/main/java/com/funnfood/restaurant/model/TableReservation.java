@@ -33,7 +33,7 @@ public class TableReservation {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "dining_table_id")
+    @JoinColumn(name = "dining_table_id", nullable = true)
     private DiningTable diningTable;
 
     public TableReservation() {

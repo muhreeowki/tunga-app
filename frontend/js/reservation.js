@@ -1,3 +1,65 @@
+const cookieManager = {
+    setCookie(name, value, days) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+    },
+    getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    },
+    deleteCookie(name) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+    }
+};
+
+
+
+async function makeApiCall2(endpoint, method = 'GET', data = null) {
+    const url = API_CONFIG.BASE_URL + endpoint;
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    // Get token from cookies instead of localStorage
+    const token = cookieManager.getCookie('token');
+    if (token && !endpoint.includes('/auth/')) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const options = {
+        method,
+        headers
+    };
+
+    if (data) {
+        options.body = JSON.stringify(data);
+    }
+
+    try {
+        const response = await fetch(url, options);
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                // Clear cookies instead of localStorage
+                cookieManager.deleteCookie('token');
+                cookieManager.deleteCookie('user');
+                window.location.href = 'login.html';
+                throw new Error('Session expired. Please login again.');
+            }
+            throw new Error(responseData.message || 'An error occurred');
+        }
+
+        return responseData;
+    } catch (error) {
+        console.error('API call error:', error);
+        throw error;
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const reservationForm = document.getElementById('reservationForm');
     const dateInput = document.getElementById('date');
@@ -5,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('submitReservation');
     const loadingSpinner = document.getElementById('loadingSpinner');
     const errorMessage = document.getElementById('errorMessage');
+    const guests = document.getElementById('guests');
 
     // Set minimum date (today) and maximum date (1 month from today)
     const today = new Date();
@@ -35,6 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle form submission
     reservationForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        const reservationDateTime = new Date(`${dateInput.value}T${timeInput.value}`);
         
         // Show loading state
         submitButton.disabled = true;
@@ -45,9 +110,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Create reservation object
             const reservation = {
                 restaurant: document.getElementById('restaurant').value,
-                date: dateInput.value,
-                time: timeInput.value,
-                guests: document.getElementById('guests').value,
+                reservationDateTime: reservationDateTime.toISOString(),
+                numberOfGuests: document.getElementById('guests').value,
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
@@ -55,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             // Make API call
-            const response = await makeApiCall(API_CONFIG.ENDPOINTS.RESERVATION, 'POST', reservation);
+            const response = await makeApiCall2(API_CONFIG.ENDPOINTS.RESERVATION, 'POST', reservation);
             
             // Show success message with token number
             alert(`Reservation successful! Your token number is: ${response.token}`);
@@ -64,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             reservationForm.reset();
         } catch (error) {
             console.error('Reservation failed:', error);
+            console.log(reservationDateTime.toISOString());
             errorMessage.textContent = 'Failed to make reservation. Please try again.';
             errorMessage.style.display = 'block';
         } finally {

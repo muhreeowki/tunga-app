@@ -68,7 +68,7 @@
                         <form id="reservationForm">
                             <div class="mb-3">
                                 <label for="restaurant" class="form-label">Select Restaurant</label>
-                                <select class="form-select" id="restaurant" required>
+                                <select class="form-select" id="restaurant" name="restaurant" required>
                                     <option value="">Choose a restaurant</option>
                                     <option value="1">TUNGA Downtown</option>
                                     <option value="2">TUNGA Riverside</option>
@@ -77,15 +77,15 @@
                             </div>
                             <div class="mb-3">
                                 <label for="date" class="form-label">Date</label>
-                                <input type="date" class="form-control" id="date" required>
+                                <input type="date" class="form-control" name="date" id="date" required>
                             </div>
                             <div class="mb-3">
                                 <label for="time" class="form-label">Time</label>
-                                <input type="time" class="form-control" id="time" required>
+                                <input type="time" class="form-control" name="time" id="time" required>
                             </div>
                             <div class="mb-3">
                                 <label for="guests" class="form-label">Number of Guests</label>
-                                <select class="form-select" id="guests" required>
+                                <select class="form-select" id="guests" name="guests" required>
                                     <option value="">Select number of guests</option>
                                     <option value="1">1 Person</option>
                                     <option value="2">2 People</option>
@@ -99,19 +99,19 @@
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="name" required>
+                                <input type="text" class="form-control" name="name" id="name" required>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" required>
+                                <input type="email" class="form-control" name="email" id="email" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="phone" required>
+                                <input type="tel" class="form-control" name="phone" id="phone" required>
                             </div>
                             <div class="mb-3">
                                 <label for="specialRequests" class="form-label">Special Requests</label>
-                                <textarea class="form-control" id="specialRequests" rows="3"></textarea>
+                                <textarea class="form-control" name="specialRequests"  id="specialRequests" rows="3"></textarea>
                             </div>
                             <div class="text-center mt-4">
                                 <button type="submit" id="submitReservation" class="btn btn-primary">
