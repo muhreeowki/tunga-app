@@ -2180,3 +2180,4 @@ insert into dining_tables (capacity,dining_room_id,table_number,id) values (?,?,
 2025-04-12 17:03:40.934 [http-nio-8080-exec-5] ERROR c.f.r.security.jwt.AuthEntryPointJwt - Unauthorized error: Full authentication is required to access this resource
 2025-04-12 17:16:44.001 [http-nio-8080-exec-8] ERROR c.f.r.security.jwt.AuthTokenFilter - Cannot set user authentication: User Not Found with username: collins2
 2025-04-12 17:16:44.011 [http-nio-8080-exec-8] ERROR c.f.r.security.jwt.AuthEntryPointJwt - Unauthorized error: Full authentication is required to access this resource
+2025-04-12 18:28:40.851 [http-nio-8080-exec-2] ERROR c.f.r.security.jwt.AuthEntryPointJwt - Unauthorized error: Full authentication is required to access this resource
